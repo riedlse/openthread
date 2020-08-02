@@ -10,11 +10,24 @@
 #define GPIO_LOGIC_HI 0
 #define GPIO_LOGIC_LOW 1
 
+#define NRFX_TWIM_ENABLED 1
+#define NRFX_TWI_ENABLED 1
+#define TWI_ENABLED 1
+#define TWI0_ENABLED 1
+#define TWI0_USE_EASY_DMA 1
+#define NRFX_TWIM0_ENABLED 1
+
 #define LED_GPIO_PORT 0x50000300UL
 #define LED_1_PIN 13 // turn on to indicate leader role
 #define LED_2_PIN 14 // turn on to indicate router role
 #define LED_3_PIN 15 // turn on to indicate child role
 #define LED_4_PIN 16 // turn on to indicate UDP receive
+
+/* TWI instance ID. */
+#define TWIM_INSTANCE_ID     0
+
+#define ARDUINO_SCL_PIN             27    // SCL signal pin
+#define ARDUINO_SDA_PIN             26    // SDA signal pin
 
 /* Header for the functions defined here */
 #include "openthread-system.h"
@@ -30,10 +43,26 @@
 #include "hal/nrf_gpiote.h"
 #include "nrfx/drivers/include/nrfx_gpiote.h"
 #include "hal/nrf_temp.h"
+#include "nrfx/drivers/include/nrfx_twim.h"
+
+void twim_init (void);
+uint32_t boardGetChipTemperature(void);
+uint32_t boardGetTwiTemperature(void);
+int32_t boardInit(void);
+void twi_handler(nrfx_twim_evt_t const * p_event, void * p_context);
+static void in_pin1_handler(uint32_t pin, nrf_gpiote_polarity_t action);
 
 /* Declaring callback function for button 1. */
 static otSysButtonCallback sButtonHandler;
 static bool                sButtonPressed;
+/* TWI instance. */
+static const nrfx_twim_t m_twim = NRFX_TWIM_INSTANCE(TWIM_INSTANCE_ID);
+/* Buffer for samples read from temperature sensor. */
+static uint8_t m_sample;
+/* Indicates if operation on TWI has ended. */
+static volatile bool m_xfer_done = false;
+
+static uint32_t twiTemp;
 
 uint32_t boardGetChipTemperature(void) {
     // board temp is in .25degree c units
@@ -43,10 +72,62 @@ uint32_t boardGetChipTemperature(void) {
   return(temp);
 }
 
-int32_t boardInit(void) {
-    //if using i2c probes, set that up here
-  return(1);
+uint32_t boardGetTwiTemperature(void) {
+    // board temp is in .25degree c units
+    //convert to milldegrees Farenheit
+    uint32_t temp = twiTemp;
+    temp = ((temp*9*250)/5)+32000;
+  return(temp);
 }
+
+int32_t boardInit(void) {
+    twim_init();
+    return(1);
+}
+
+__STATIC_INLINE void data_handler(uint8_t temp)
+{
+    twiTemp = temp;
+}
+
+/**
+ * @brief TWI events handler.
+ */
+void twi_handler(nrfx_twim_evt_t const * p_event, void * p_context)
+{
+    switch (p_event->type)
+    {
+        case NRFX_TWIM_EVT_DONE:
+            if (p_event->xfer_desc.type == NRFX_TWIM_XFER_RX)
+            {
+                data_handler(m_sample);
+            }
+            m_xfer_done = true;
+            break;
+        default:
+            break;
+    }
+}
+
+
+void twim_init (void)
+{
+    nrfx_err_t err_code;
+
+    const nrfx_twim_config_t twim_config = {
+       .scl                = ARDUINO_SCL_PIN,
+       .sda                = ARDUINO_SDA_PIN,
+       .frequency          = NRF_TWIM_FREQ_100K,
+       .interrupt_priority = NRFX_TWIM_DEFAULT_CONFIG_IRQ_PRIORITY,
+       .hold_bus_uninit     = false
+    };
+
+    err_code = nrfx_twim_init(&m_twim, &twim_config, twi_handler, NULL);
+    APP_ERROR_CHECK(err_code);
+
+    nrfx_twim_enable(&m_twim);
+}
+
 
 
 /**
