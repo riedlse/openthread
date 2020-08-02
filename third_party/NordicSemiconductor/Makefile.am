@@ -182,6 +182,7 @@ NORDICSEMI_COMMON_SOURCES                                                       
     nrfx/soc/nrfx_atomic.c                                                                                                \
     nrfx/drivers/src/nrfx_gpiote.c                                                                                        \
     nrfx/drivers/src/nrfx_twi.c                                                                                           \
+    nrfx/drivers/src/nrfx_twim.c                                                                                           \
     $(NULL)
 
 NORDICSEMI_USB_SOURCES                                                                                                  = \

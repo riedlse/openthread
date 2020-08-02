@@ -84,6 +84,8 @@ endif
 
 ot_ncp_ftd_CPPFLAGS                                                    = \
     $(CPPFLAGS_COMMON)                                                   \
+    -DOPENTHREAD_FTD=0                                                   \
+    -DOPENTHREAD_MTD=0                                                   \
     $(NULL)
 
 ot_ncp_ftd_LDADD                                                       = \
@@ -152,6 +154,8 @@ endif
 
 ot_rcp_CPPFLAGS                                                        = \
     $(CPPFLAGS_COMMON)                                                   \
+    -DOPENTHREAD_FTD=0                                                   \
+    -DOPENTHREAD_MTD=0                                                   \
     $(NULL)
 
 ot_rcp_LDADD                                                           = \

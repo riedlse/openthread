@@ -49,6 +49,8 @@ libopenthread_platform_utils_a_SOURCES  = \
     settings_ram.c                        \
     soft_source_match_table.c             \
     soft_source_match_table.h             \
+    ms8607.c.                             \
+    ms8607.h
     $(NULL)
 
 include $(abs_top_nlbuild_autotools_dir)/automake/post.am
