@@ -65,6 +65,7 @@ endif
 
 ot_cli_ftd_CPPFLAGS                                                    = \
     $(CPPFLAGS_COMMON)                                                   \
+    -DOPENTHREAD_FTD=1                                                   \
     $(NULL)
 
 ot_cli_ftd_LDADD                                                       = \
@@ -95,6 +96,7 @@ endif
 
 ot_cli_mtd_CPPFLAGS                                                    = \
     $(CPPFLAGS_COMMON)                                                   \
+    -DOPENTHREAD_FTD=0                                                   \
     $(NULL)
 
 ot_cli_mtd_LDADD                                                       = \

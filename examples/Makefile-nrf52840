@@ -110,6 +110,11 @@ COMMONCFLAGS                      := \
 
 include $(dir $(abspath $(lastword $(MAKEFILE_LIST))))/common-switches.mk
 
+# Defined in third_party/NordicSemiconductor/nrfx/templates/nRF52840/nrfx_config.h
+COMMONCFLAGS += -DGPIOTE_ENABLED=1
+COMMONCFLAGS += -DGPIOTE_CONFIG_IRQ_PRIORITY=7
+COMMONCFLAGS += -DGPIOTE_CONFIG_NUM_OF_LOW_POWER_EVENTS=1
+
 ifeq ($(DISABLE_BUILTIN_MBEDTLS),1)
 COMMONCFLAGS                   += $(NRF52840_MBEDTLS_CPPFLAGS)
 else

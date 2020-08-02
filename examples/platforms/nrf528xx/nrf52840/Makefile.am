@@ -123,6 +123,7 @@ PLATFORM_COMMON_SOURCES                                                         
     src/radio.c                                                                                              \
     src/system.c                                                                                             \
     src/temp.c                                                                                               \
+    src/gpio.c                                                                                               \
     $(NULL)
 
 TRANSPORT_SOURCES                                                                                          = \
