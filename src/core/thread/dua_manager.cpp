@@ -89,7 +89,9 @@ DuaManager::DuaManager(Instance &aInstance)
 
 void DuaManager::HandleDomainPrefixUpdate(BackboneRouter::Leader::DomainPrefixState aState)
 {
+#if OPENTHREAD_CONFIG_DUA_ENABLE
     const Ip6::Prefix *prefix = nullptr;
+#endif
 
     if ((aState == BackboneRouter::Leader::kDomainPrefixRemoved) ||
         (aState == BackboneRouter::Leader::kDomainPrefixRefreshed))
@@ -145,9 +147,10 @@ void DuaManager::HandleDomainPrefixUpdate(BackboneRouter::Leader::DomainPrefixSt
     }
 
     AddDomainUnicastAddress();
-#endif
 
 exit:
+#endif
+
     return;
 }
 
