@@ -10,13 +10,6 @@
 #define GPIO_LOGIC_HI 0
 #define GPIO_LOGIC_LOW 1
 
-#define NRFX_TWIM_ENABLED 1
-#define NRFX_TWI_ENABLED 1
-#define TWI_ENABLED 1
-#define TWI0_ENABLED 1
-#define TWI0_USE_EASY_DMA 1
-#define NRFX_TWIM0_ENABLED 1
-
 #define LED_GPIO_PORT 0x50000300UL
 #define LED_1_PIN 13 // turn on to indicate leader role
 #define LED_2_PIN 14 // turn on to indicate router role
